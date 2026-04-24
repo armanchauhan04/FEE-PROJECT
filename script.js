@@ -213,29 +213,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // 3. LIVE SEARCH LOGIC
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const filtered = allPosts.filter(p => 
-            p.title.toLowerCase().includes(term) || 
-            p.cat.toLowerCase().includes(term)
-        );
-        renderPosts(filtered);
-    });
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allPosts.filter(p => 
+                p.title.toLowerCase().includes(term) || 
+                p.cat.toLowerCase().includes(term)
+            );
+            if (postContainer) renderPosts(filtered);
+        });
+    }
 
     // 4. THEME TOGGLE (Persistent)
-    const themeBtn = document.getElementById('themeToggle');
-    themeBtn.onclick = () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const next = isDark ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    };
+    const themeBtnObj = document.getElementById('themeToggle');
+    if (themeBtnObj) {
+        themeBtnObj.onclick = () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const next = isDark ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        };
+    }
 
     // INIT
     setTimeout(() => {
-        loader.style.display = 'none';
-        renderPosts(allPosts);
-        document.getElementById('count').innerText = allPosts.length;
+        if (loader) loader.style.display = 'none';
+        if (postContainer) renderPosts(allPosts);
+        const countEl = document.getElementById('count');
+        if (countEl) countEl.innerText = allPosts.length;
     }, 1500); // Simulated Loading
 });
 
@@ -319,8 +324,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 4. Close Modal logic
-    closeModal.onclick = () => modal.style.display = 'none';
-    window.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+    if (closeModal) {
+        closeModal.onclick = () => {
+            if (modal) modal.style.display = 'none';
+        };
+    }
+    window.onclick = (e) => { if (modal && e.target === modal) modal.style.display = 'none'; };
 });
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('articleModal');
@@ -344,22 +353,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const category = post.querySelector('.post-category')?.innerText || "General";
 
                 // Inject into Modal
-                modalContent.innerHTML = `
-                    <div style="padding: 10px;">
-                        <img src="${img}" style="width:100%; border-radius:15px; max-height:350px; object-fit:cover;">
-                        <span class="badge" style="display:inline-block; margin-top:20px; background:var(--primary); color:white; padding:4px 12px; border-radius:50px; font-size:0.8rem;">${category}</span>
-                        <h1 style="margin:15px 0; font-size:2rem; line-height:1.2;">${title}</h1>
-                        <hr style="opacity:0.1; margin:20px 0;">
-                        <p style="font-size:1.1rem; line-height:1.7; color:var(--text); opacity:0.9;">${description}</p>
-                        <p style="margin-top:20px; line-height:1.7;">
-                            This content is dynamically rendered using JavaScript Event Delegation. 
-                            In a professional environment, this demonstrates efficient memory management 
-                            by using a single event listener for multiple elements.
-                        </p>
-                    </div>
-                `;
+                if (modalContent) {
+                    modalContent.innerHTML = `
+                        <div style="padding: 10px;">
+                            <img src="${img}" style="width:100%; border-radius:15px; max-height:350px; object-fit:cover;">
+                            <span class="badge" style="display:inline-block; margin-top:20px; background:var(--primary); color:white; padding:4px 12px; border-radius:50px; font-size:0.8rem;">${category}</span>
+                            <h1 style="margin:15px 0; font-size:2rem; line-height:1.2;">${title}</h1>
+                            <hr style="opacity:0.1; margin:20px 0;">
+                            <p style="font-size:1.1rem; line-height:1.7; color:var(--text); opacity:0.9;">${description}</p>
+                            <p style="margin-top:20px; line-height:1.7;">
+                                This content is dynamically rendered using JavaScript Event Delegation. 
+                                In a professional environment, this demonstrates efficient memory management 
+                                by using a single event listener for multiple elements.
+                            </p>
+                        </div>
+                    `;
+                }
 
-                modal.style.display = 'flex';
+                if (modal) modal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             }
         });
