@@ -127,17 +127,19 @@ window.addEventListener('scroll', () => {
 });
 const fsToggle = document.getElementById('fsToggle');
 
-fsToggle.addEventListener('click', () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      alert(`Error attempting to enable full-screen mode: ${err.message}`);
-    });
-    fsToggle.textContent = '📂 Exit Full';
-  } else {
-    document.exitFullscreen();
-    fsToggle.textContent = '🖥️ Full View';
-  }
-});
+if (fsToggle) {
+  fsToggle.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        alert(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+      fsToggle.textContent = '📂 Exit Full';
+    } else {
+      document.exitFullscreen();
+      fsToggle.textContent = '🖥️ Full View';
+    }
+  });
+}
 const themeBtn = document.getElementById('themeToggle');
 const htmlEl = document.documentElement;
 
@@ -365,7 +367,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Close modal with 'Esc' key
 document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape" && modal.style.display === 'flex') {
+    const modal = document.getElementById('articleModal');
+    if (modal && e.key === "Escape" && modal.style.display === 'flex') {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     }
